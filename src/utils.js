@@ -5,7 +5,7 @@ exports.sleep = (waitTimeInMs = WAITTIMEINMS) => new Promise(resolve => setTimeo
 
 exports.printMessage = (stage = "", message = "", status = IN_PROGRESS) => {
     let messObj = {stage: stage, message: message, status: status, datetime: new Date()}; 
-    console.log(JSON.stringify(messObj));
+    console.log("📗" + JSON.stringify(messObj));
     return JSON.stringify(messObj);
 };
 

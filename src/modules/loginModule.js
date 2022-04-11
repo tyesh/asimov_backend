@@ -1,6 +1,6 @@
 const { By } = require("selenium-webdriver");
 const { sleep, printMessage } = require("../utils");
-const { BASE_URL_TESTING, BASE_URL_LOCAL, BASE_URL_HOME, SMALLPROCESS_TIME, ACCESS_TOKEN, ERROR } = require("../constants");
+const { BASE_URL_TESTING, BASE_URL_LOCAL, BASE_URL_HOME, ACCESS_TOKEN, ERROR } = require("../constants");
 const LOGIN_URL = "/login";
 const INPUT_USER = '.login .login-input input[type="text"]';
 const INPUT_PASSWORD = '.login .login-input input[type="password"]';
