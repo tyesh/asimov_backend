@@ -2,7 +2,9 @@ const { By, Key } = require("selenium-webdriver");
 const VOUCHER_ROOT = "/voucher";
 const VOUCHER_CREDIT_WITH_INVOICE = "/invoices#CREDITO";
 const { BASE_URL_TESTING, BASE_URL_LOCAL } = require("../constants");
-const { sleep, printMessage, errorMessage, endPrintMessages } = require("../utils");
+const { sleep, printMessage, errorMessage, getRandomNum } = require("../utils");
+
+const baseTaxNumber = 900000;
 
 const VOUCHER_TYPES = ["Contado", "Crédito", "Crédito 7 días", "Crédito 30 días"];
 
@@ -19,7 +21,7 @@ module.exports.createCreditVoucherWithInvoice = async function(driver, env, res)
         }
         await sleep();
         res.write(printMessage("Tipo", "Elegiendo tipo de factura"));
-        let type = VOUCHER_TYPES[Math.floor(Math.random() * 3)];
+        let type = VOUCHER_TYPES[getRandomNum(3)];
         let invoiceTypeInput = await driver.findElement(By.id("invoiceType"));
         await invoiceTypeInput.click();
         await sleep();
@@ -36,7 +38,7 @@ module.exports.createCreditVoucherWithInvoice = async function(driver, env, res)
         await actions.doubleClick(rowSelected[0]).perform();
         await sleep();
         let taxNumberInput = await driver.findElement(By.css("input[type='text']"));
-        await taxNumberInput.sendKeys(Math.floor(Math.random() * 999999));
+        await taxNumberInput.sendKeys(baseTaxNumber + getRandomNum(99999));
         await taxNumberInput.sendKeys(Key.ENTER);
         await sleep();
         let pencilButton = await driver.findElements(By.css(".ant-btn-icon-only"));

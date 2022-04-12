@@ -13,3 +13,7 @@ exports.initDriver = async () => {
     let driver = await new Builder().forBrowser(BROWSER).build();
     return driver;
 };
+
+exports.getRandomNum = limit => {
+    return Math.floor(Math.random() * limit);
+};
