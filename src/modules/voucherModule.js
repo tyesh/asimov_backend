@@ -1,8 +1,8 @@
 const { By, Key } = require("selenium-webdriver");
 const VOUCHER_ROOT = "/voucher";
 const VOUCHER_CREDIT_WITH_INVOICE = "/invoices#CREDITO";
-const { BASE_URL_TESTING, BASE_URL_LOCAL } = require("../constants");
-const { sleep, printMessage, errorMessage, getRandomNum } = require("../utils");
+const { BASE_URL_TESTING, BASE_URL_LOCAL, ERROR } = require("../constants");
+const { sleep, printMessage, getRandomNum } = require("../utils");
 
 const baseTaxNumber = 900000;
 
@@ -50,13 +50,11 @@ module.exports.createCreditVoucherWithInvoice = async function(driver, env, res)
         await sleep();
         let savebutton = await driver.findElement(By.css(".ant-btn-default"));
         await savebutton.click();
-        await sleep();
+        await sleep(5000);
         let ticketNumber = await driver.findElement(By.css(".ant-modal-confirm-title"));
         ticketNumber = await ticketNumber.getAttribute("innerHTML");
-        res.write(printMessage("Exito", ticketNumber));
-        await sleep();
     } catch (error) {
         console.log(error);
-        res.write(errorMessage(error))
+        res.write(printMessage("Error", error, ERROR));
     }
 };
