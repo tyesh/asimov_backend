@@ -1,5 +1,5 @@
 var express = require('express');
-const { ERROR } = require('../src/constants');
+const { ERROR, SUCCESS } = require('../src/constants');
 let router = express.Router();
 const loginModule = require('../src/modules/loginModule');
 const voucherModule = require("../src/modules/voucherModule");
