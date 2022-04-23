@@ -1,5 +1,5 @@
 const { Builder } = require("selenium-webdriver");
-const { BROWSER, WAITTIMEINMS, IN_PROGRESS } = require("./constants");
+const { BROWSER, WAITTIMEINMS, IN_PROGRESS, STORES } = require("./constants");
 
 exports.sleep = (waitTimeInMs = WAITTIMEINMS) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
@@ -16,4 +16,9 @@ exports.initDriver = async () => {
 
 exports.getRandomNum = limit => {
     return Math.floor(Math.random() * limit);
+};
+
+exports.getRandonStore = () => {
+    const rIndex = this.getRandomNum(STORES.length);
+    return STORES[rIndex];
 };

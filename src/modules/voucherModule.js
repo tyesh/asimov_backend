@@ -2,16 +2,17 @@ const { By, Key } = require("selenium-webdriver");
 const VOUCHER_ROOT = "/voucher";
 const VOUCHER_CREDIT_WITH_INVOICE = "/invoices#CREDITO";
 const { BASE_URL_TESTING, BASE_URL_LOCAL, ERROR } = require("../constants");
-const { sleep, printMessage, getRandomNum } = require("../utils");
-
-const baseTaxNumber = 900000;
+const { sleep, printMessage, getRandomNum, getRandonStore } = require("../utils");
 
 const VOUCHER_TYPES = ["Contado", "Crédito", "Crédito 7 días", "Crédito 30 días"];
+const VOUCHER_STATUS = ["Borrador", "Confirmado"];
 
 module.exports.createCreditVoucherWithInvoice = async function(driver, env, res) {
     await sleep();
     res.write(printMessage("Ingresando", "Accediendo a la vista de creación de la nota"));
     try {
+        const status = VOUCHER_STATUS[getRandomNum(VOUCHER_STATUS.length)];
+        console.log(status);
         let envVoucherURL = (env === "testing" ? BASE_URL_TESTING : BASE_URL_LOCAL) + VOUCHER_ROOT + VOUCHER_CREDIT_WITH_INVOICE;
         await driver.get(envVoucherURL);
         var currentURL = await driver.getCurrentUrl();
@@ -37,22 +38,36 @@ module.exports.createCreditVoucherWithInvoice = async function(driver, env, res)
         res.write(printMessage("Creación", "Ingresando a la vista de creación"));
         await actions.doubleClick(rowSelected[0]).perform();
         await sleep();
-        let taxNumberInput = await driver.findElement(By.css("input[type='text']"));
-        await taxNumberInput.sendKeys(baseTaxNumber + getRandomNum(99999));
-        await taxNumberInput.sendKeys(Key.ENTER);
-        await sleep();
         let pencilButton = await driver.findElements(By.css(".ant-btn-icon-only"));
+        await pencilButton[0].click();
+        await sleep();
+        let modalMask = await driver.findElement(By.css("button.ant-modal-close"));
+        await modalMask.click();
+        await sleep();
         await pencilButton[1].click();
         await sleep();
-        let usedInInput = await driver.findElement(By.css("input[type='search']"));
-        await usedInInput.sendKeys("Central de Distribución");
-        await usedInInput.sendKeys(Key.ENTER);
+        let usedInInput = await driver.findElements(By.css("input[type='search']"));
+        await usedInInput[0].sendKeys(getRandonStore());
+        await usedInInput[0].sendKeys(Key.ENTER);
         await sleep();
-        let savebutton = await driver.findElement(By.css(".ant-btn-default"));
-        await savebutton.click();
-        await sleep(5000);
-        let ticketNumber = await driver.findElement(By.css(".ant-modal-confirm-title"));
-        ticketNumber = await ticketNumber.getAttribute("innerHTML");
+        if(usedInInput[1] !== undefined) {
+            await usedInInput[1].sendKeys(getRandonStore());
+            await usedInInput[1].sendKeys(Key.ENTER);
+            await sleep();
+        }
+        if(status === "Borrador") {
+            let savebutton = await driver.findElement(By.css(".ant-btn-default"));
+            await savebutton.click();
+            await sleep();
+        }
+        if(status === "Confirmado") {
+            let savebutton = await driver.findElements(By.css(".ant-btn-primary"));
+            await savebutton[1].click();
+            await sleep();
+            savebutton = await driver.findElements(By.css(".ant-btn-primary"));
+            await savebutton[2].click();
+            await sleep();
+        }
     } catch (error) {
         console.log(error);
         res.write(printMessage("Error", error, ERROR));
